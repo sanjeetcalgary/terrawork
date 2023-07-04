@@ -11,3 +11,11 @@
 
 ![Project diagram](image.png)
 
+### Steps
+--------------------------
+- Created VPC > Subnet > IGW > Route table > subnet association with route table
+- Create Security Group and allow access po ports:
+    + SSH - 22
+    + HTTP - 80
+    + HTTPS - 443
+
