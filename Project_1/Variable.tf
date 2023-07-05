@@ -41,3 +41,20 @@ variable "own_ip" {
   type = string
   description = "Own IPv4"
 }
+
+variable "instance_type" {
+  type = string
+  description = "Own IPv4"
+  default = "t2.micro"
+}
+
+variable "key_name" {
+  type = string
+  description = "login key"
+}
+
+variable "keylocation" {
+  type = string
+  description = "login key"
+  
+}
