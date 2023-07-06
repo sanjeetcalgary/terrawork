@@ -6,18 +6,13 @@ pipeline{
     }
 
     tools {
-        maven 'slave-mvn'
-       
+        maven 'slave-mvn'       
     }
 
     environment {
         DOCKER_USER = credentials('dockerid')
         DOCKER_PASSWORD = credentials('dockerpwd')
-        DOCKER_TAG = "sanjeetkr/web-app:v1.2.0"
-        NEXUS_USER = credentials('nexusID')
-        NEXUS_PWD = credentials('nexusPwd')
-        VERSION_TAG = "10.0.0.174:8083/java-maven:v1.1.0"
-        NEXUS_ENDPOINT = "10.0.0.174:8083"
+        DOCKER_TAG = "sanjeetkr/web-app:v1.2.0"      
     }
 
     stages {
@@ -25,28 +20,28 @@ pipeline{
         stage('Build jar file') {
             steps {
                 echo "Building jar"
-                sh 'mvn clean package deploy'
+                sh 'mvn clean package'
                 echo "executing pipeline"
             }
         }
 
-
-
-
         stage('Build docker image') {
             steps {
                 echo "Building docker image"
-                sh "docker build -t ${VERSION_TAG} ."
-                sh "docker login -u $NEXUS_USER -p $NEXUS_PWD ${NEXUS_ENDPOINT}"
-                sh "docker push ${VERSION_TAG}"
                 sh "docker build -t ${DOCKER_TAG} ."
                 sh "docker login -u $DOCKER_USER -p $DOCKER_PASSWORD"
+                sh "docker push ${DOCKER_TAG}"
             }
         }
 
         stage('Deploy the image') {
             steps {
-                echo "Deployment phase"
+                script {
+                    def dockerCmd = "docker run -d -p 8080:8080 ${DOCKER_TAG}"
+                    sshagent(['ec2-server']) {
+                        sh "ssh -o StrictHostKeyChecking=no ec2-user@44.201.154.161 ${dockerCmd}"
+                    }
+                }
             }
         }
 
