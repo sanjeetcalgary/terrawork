@@ -24,7 +24,13 @@ pipeline{
 
         stage('Deploy the image') {
             steps {
-                echo "Deployment phase"
+                script {
+                    def docker_cmd = "docker run -d -p 3000:80 sanjeetkr/nodeapp:v1.1"
+                    sshagent(['ec2-server']) { // -o StrictHostKeyChecking=no : used to suppress popup
+                        sh "ssh -o StrictHostKeyChecking=no ec2-user@44.201.154.161 ${docker_cmd}"
+
+                    }
+                }
             }
         }
 
