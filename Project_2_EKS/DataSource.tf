@@ -17,3 +17,11 @@ data "aws_ami" "amzami" {
         values = [ "x86_64" ]
     }
 }
+
+data "aws_eks_cluster" "myapp-cluster" {
+  name = module.eks.cluster_name
+}
+
+data "aws_eks_cluster_auth" "myapp-cluster" {
+  name = module.eks.cluster_name
+}
