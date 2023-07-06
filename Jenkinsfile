@@ -13,6 +13,7 @@ pipeline{
     environment {
         DOCKER_USER = credentials('dockerid')
         DOCKER_PASSWORD = credentials('dockerpwd')
+        DOCKER_TAG = "sanjeetkr/web-app:v1.2.0"
         NEXUS_USER = credentials('nexusID')
         NEXUS_PWD = credentials('nexusPwd')
         VERSION_TAG = "10.0.0.174:8083/java-maven:v1.1.0"
@@ -38,6 +39,8 @@ pipeline{
                 sh "docker build -t ${VERSION_TAG} ."
                 sh "docker login -u $NEXUS_USER -p $NEXUS_PWD ${NEXUS_ENDPOINT}"
                 sh "docker push ${VERSION_TAG}"
+                sh "docker build -t ${DOCKER_TAG} ."
+                sh "docker login -u $DOCKER_USER -p $DOCKER_PASSWORD"
             }
         }
 
